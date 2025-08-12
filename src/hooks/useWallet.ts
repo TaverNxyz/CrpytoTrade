@@ -81,7 +81,7 @@ export const useWallet = () => {
     try {
       // Generate a new address (mock implementation)
       const privateKey = CryptoUtils.generateSeed(32);
-      const address = CryptoUtils.generateAddress(privateKey, symbol);
+      const address = await CryptoUtils.generateAddress(privateKey, symbol);
       
       return address;
     } catch (err) {
