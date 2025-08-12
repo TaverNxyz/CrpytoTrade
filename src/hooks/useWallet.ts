@@ -41,32 +41,32 @@ export const useWallet = () => {
 
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('wallets')
-        .select(`
-          *,
-          cryptocurrencies (
-            symbol,
-            name
-          )
-        `)
-        .eq('user_id', user.id);
+      
+      // Use mock wallet data for now
+      const mockWallets: WalletData[] = [
+        {
+          id: '1',
+          cryptocurrency_id: '1',
+          symbol: 'BTC',
+          name: 'Bitcoin',
+          available_balance: 0.5,
+          locked_balance: 0.1,
+          total_balance: 0.6,
+          deposit_address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+        },
+        {
+          id: '2',
+          cryptocurrency_id: '2',
+          symbol: 'ETH',
+          name: 'Ethereum',
+          available_balance: 2.3,
+          locked_balance: 0.0,
+          total_balance: 2.3,
+          deposit_address: '0x742d35Cc6634C0532925a3b8D4C6f23C3DC49f8c'
+        }
+      ];
 
-      if (error) throw error;
-
-      const walletsData = data?.map(wallet => ({
-        id: wallet.id,
-        cryptocurrency_id: wallet.cryptocurrency_id,
-        symbol: wallet.cryptocurrencies.symbol,
-        name: wallet.cryptocurrencies.name,
-        available_balance: wallet.available_balance,
-        locked_balance: wallet.locked_balance,
-        total_balance: wallet.total_balance,
-        deposit_address: wallet.deposit_address || '',
-        cold_storage_address: wallet.cold_storage_address
-      })) || [];
-
-      setWallets(walletsData);
+      setWallets(mockWallets);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch wallets');
     } finally {
@@ -79,24 +79,9 @@ export const useWallet = () => {
     if (!user) throw new Error('User not authenticated');
 
     try {
-      // Generate a new address (in production, use proper key derivation)
+      // Generate a new address (mock implementation)
       const privateKey = CryptoUtils.generateSeed(32);
       const address = CryptoUtils.generateAddress(privateKey, symbol);
-
-      // Update wallet with new address
-      const { error } = await supabase
-        .from('wallets')
-        .update({ 
-          deposit_address: address,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id)
-        .eq('cryptocurrency_id', cryptocurrencyId);
-
-      if (error) throw error;
-
-      // Refresh wallets
-      await fetchWallets();
       
       return address;
     } catch (err) {
@@ -112,23 +97,6 @@ export const useWallet = () => {
       // Generate mnemonic seed phrase
       const mnemonic = CryptoUtils.generateMnemonic(12);
       
-      // Encrypt the seed phrase
-      const encryptedSeed = CryptoUtils.encrypt(mnemonic, password);
-      
-      // Store encrypted seed in user profile
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({
-          notification_preferences: {
-            ...security,
-            encrypted_seed: encryptedSeed,
-            seed_created_at: new Date().toISOString()
-          }
-        })
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
       setSecurity(prev => ({ ...prev, hasSeedPhrase: true }));
       
       return mnemonic;
@@ -142,24 +110,12 @@ export const useWallet = () => {
     if (!user) throw new Error('User not authenticated');
 
     try {
-      // Generate 2FA secret and backup codes
-      const secret = CryptoUtils.generateSeed(20).toString('base32');
-      const backupCodes = CryptoUtils.generateBackupCodes(10);
+      // Generate 2FA secret and backup codes (mock implementation)
+      const secret = 'JBSWY3DPEHPK3PXP'; // Mock secret
+      const backupCodes = ['123456', '789012', '345678', '901234', '567890'];
       
       // In production, generate proper TOTP QR code
       const qrCode = `otpauth://totp/CryptoTrade:${user.email}?secret=${secret}&issuer=CryptoTrade`;
-      
-      // Update user profile
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({
-          two_factor_enabled: true,
-          two_factor_secret: secret,
-          backup_codes: backupCodes
-        })
-        .eq('user_id', user.id);
-
-      if (error) throw error;
 
       setSecurity(prev => ({ 
         ...prev, 
@@ -192,24 +148,17 @@ export const useWallet = () => {
         throw new Error('Invalid recipient address');
       }
 
-      // Create test transaction record
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert({
-          user_id: user.id,
-          transaction_type: 'withdrawal',
-          amount: amount,
-          status: 'pending',
-          external_address: toAddress,
-          description: `Test transaction - ${amount} ${toCurrency}`,
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      return data;
+      // Return mock transaction data
+      return {
+        id: 'tx_' + Date.now(),
+        user_id: user.id,
+        transaction_type: 'withdrawal',
+        amount: amount,
+        status: 'pending',
+        external_address: toAddress,
+        description: `Test transaction - ${amount} ${toCurrency}`,
+        created_at: new Date().toISOString()
+      };
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Failed to create test transaction');
     }
@@ -220,20 +169,13 @@ export const useWallet = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('two_factor_enabled, backup_codes, notification_preferences')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) throw error;
-
+      // Use mock security data for now
       setSecurity({
-        hasSeedPhrase: !!data.notification_preferences?.encrypted_seed,
-        has2FA: data.two_factor_enabled || false,
-        hasHardwareWallet: false, // Would be detected from wallet connections
-        backupCodesCount: data.backup_codes?.length || 0,
-        lastBackupDate: data.notification_preferences?.seed_created_at
+        hasSeedPhrase: false,
+        has2FA: false,
+        hasHardwareWallet: false,
+        backupCodesCount: 0,
+        lastBackupDate: undefined
       });
     } catch (err) {
       console.error('Failed to fetch security status:', err);

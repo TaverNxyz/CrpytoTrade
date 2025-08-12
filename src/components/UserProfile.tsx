@@ -83,8 +83,9 @@ export const UserProfile = () => {
                   variant="outline" 
                   className="glass"
                 >
-                Sign Out
-              </Button>
+                  Sign Out
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -92,5 +93,3 @@ export const UserProfile = () => {
     </div>
   );
 };
-  )
-}
