@@ -10,147 +10,79 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
-      crypto_price_history: {
+      "User Profiles Extended": {
         Row: {
-          crypto_id: number | null
+          created_at: string
           id: number
-          market_cap: number | null
-          price: number
-          timestamp: string | null
-          volume: number | null
         }
         Insert: {
-          crypto_id?: number | null
-          id?: never
-          market_cap?: number | null
-          price: number
-          timestamp?: string | null
-          volume?: number | null
+          created_at?: string
+          id?: number
         }
         Update: {
-          crypto_id?: number | null
-          id?: never
-          market_cap?: number | null
-          price?: number
-          timestamp?: string | null
-          volume?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "crypto_price_history_crypto_id_fkey"
-            columns: ["crypto_id"]
-            isOneToOne: false
-            referencedRelation: "cryptocurrencies"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      cryptocurrencies: {
-        Row: {
-          blockchain_type: string | null
-          current_price: number
-          description: string | null
-          id: number
-          market_cap: number | null
-          max_supply: number | null
-          name: string
-          price_last_updated: string | null
-          symbol: string
-          total_supply: number | null
-        }
-        Insert: {
-          blockchain_type?: string | null
-          current_price: number
-          description?: string | null
-          id?: never
-          market_cap?: number | null
-          max_supply?: number | null
-          name: string
-          price_last_updated?: string | null
-          symbol: string
-          total_supply?: number | null
-        }
-        Update: {
-          blockchain_type?: string | null
-          current_price?: number
-          description?: string | null
-          id?: never
-          market_cap?: number | null
-          max_supply?: number | null
-          name?: string
-          price_last_updated?: string | null
-          symbol?: string
-          total_supply?: number | null
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          email: string | null
-          full_name: string | null
-          id: string
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id: string
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string | null
+          created_at?: string
+          id?: number
         }
         Relationships: []
       }
       user_profiles: {
         Row: {
-          cold_wallet_address: string | null
-          country: string | null
+          avatar_url: string | null
           created_at: string | null
-          full_name: string | null
-          id: number
-          kyc_verified: boolean | null
-          last_login: string | null
-          risk_tolerance: string | null
+          email: string | null
+          email_notifications: boolean | null
+          id: string
+          kyc_status: string | null
+          preferred_currency: string | null
+          risk_level: string | null
+          trading_experience: string | null
+          trading_notifications: boolean | null
           two_factor_enabled: boolean | null
-          user_id: string | null
+          updated_at: string | null
+          username: string | null
+          verification_level: number | null
+          wallet_address: string | null
+          wallet_type: string | null
         }
         Insert: {
-          cold_wallet_address?: string | null
-          country?: string | null
+          avatar_url?: string | null
           created_at?: string | null
-          full_name?: string | null
-          id?: never
-          kyc_verified?: boolean | null
-          last_login?: string | null
-          risk_tolerance?: string | null
+          email?: string | null
+          email_notifications?: boolean | null
+          id: string
+          kyc_status?: string | null
+          preferred_currency?: string | null
+          risk_level?: string | null
+          trading_experience?: string | null
+          trading_notifications?: boolean | null
           two_factor_enabled?: boolean | null
-          user_id?: string | null
+          updated_at?: string | null
+          username?: string | null
+          verification_level?: number | null
+          wallet_address?: string | null
+          wallet_type?: string | null
         }
         Update: {
-          cold_wallet_address?: string | null
-          country?: string | null
+          avatar_url?: string | null
           created_at?: string | null
-          full_name?: string | null
-          id?: never
-          kyc_verified?: boolean | null
-          last_login?: string | null
-          risk_tolerance?: string | null
+          email?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          kyc_status?: string | null
+          preferred_currency?: string | null
+          risk_level?: string | null
+          trading_experience?: string | null
+          trading_notifications?: boolean | null
           two_factor_enabled?: boolean | null
-          user_id?: string | null
+          updated_at?: string | null
+          username?: string | null
+          verification_level?: number | null
+          wallet_address?: string | null
+          wallet_type?: string | null
         }
         Relationships: []
       }
